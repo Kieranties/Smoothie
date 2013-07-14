@@ -12,10 +12,12 @@
 
     "omnibox": { "keyword": "ms"},
 
+    "options_page": "page/options.html",
+
     "background": {
         "persistent": false,
         "scripts": [
-            "js/lib/md5-min.js",
+            "js/lib/md5.min.js",
             "js/lib/rtm.js",
             "js/omni.js"
         ]

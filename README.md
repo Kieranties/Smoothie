@@ -24,9 +24,15 @@ Links
 + [License] - MIT
 + [Remember The Milk][rtm] - The real star of the show
 
+### Additional Libraries
++ [rtm-js][rtmjs] by Michael Day
++ [Javascript-MD5][jsmd5] by blueimp
+
 [@Kieranties]: http://twitter.com/kieranties
 [License]: http://kieranties.mit-license.org/
 [rtm]: http://www.rememberthemilk.com/
 [rtm smart]: https://www.rememberthemilk.com/help/?ctx=basics.smartadd.howdoiuse
 [rtm signup]: https://www.rememberthemilk.com/signup/
 [chrome]: www.google.com/chrome
+[rtmjs]: https://github.com/michaelday/rtm-js
+[jsmd5]: https://github.com/blueimp/JavaScript-MD5
