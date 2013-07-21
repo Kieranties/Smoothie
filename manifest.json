@@ -2,7 +2,7 @@
     "name": "Smoothie",
     "version": "0.1",
     "manifest_version": 2,
-    "description": "Extending the awesome Remember The Milk with a few more features",
+    "description": "Blending Remember The Milk and Google Chrome",
     "icons": {
         "16": "img/icons/icon16.png",
         "32": "img/icons/icon32.png",
@@ -10,7 +10,7 @@
         "128": "img/icons/icon128.png"
     },
 
-    "omnibox": { "keyword": "ms"},
+    "omnibox": { "keyword": "sm"},
 
     "options_page": "page/options.html",
 

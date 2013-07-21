@@ -3,24 +3,18 @@
  * Date: 14/07/13
  */
 
-
-var connect = function(){
-    rtm.get("rtm.auth.getFrob", null, function(data){
-        var authUrl = rtm.getAuth(data.frob);
-        chrome.tabs.create({url: authUrl});
-    });
-}
-
 $(function(){
+    var reload = function(){ location.reload();};
     //toggle the state of the auth box
     chrome.storage.local.get('auth', function(data){
         if(!!data.auth){
-            $('#unAuthed, #authed').toggle();
+            $('#unauthed, #authed').toggle();
+            $('#username').html(data.auth.user.username);
         }
     })
 
     // wire events
-    $('#unAuthed').click(function(){
+    $('#authBtn').click(function(){
         rtm.get("rtm.auth.getFrob", null, function(data){
             chrome.storage.local.set({frob: data.frob});
 
@@ -31,13 +25,15 @@ $(function(){
                     if(id === tab.id && info.status === "complete"){
                         // refresh auth status
                         rtm.get("rtm.auth.getToken", {frob: data.frob}, function(auth){
-                            chrome.storage.local.set({auth: auth}, function(){
-                                window.location = window.location;
-                            });
+                            chrome.storage.local.set(auth, reload);
                         });
                     }
                 })
             });
         });
+    });
+
+    $('#unauthBtn').click(function(){
+        chrome.storage.local.clear(reload);
     });
 });
