@@ -1,5 +1,5 @@
 {
-    "name": "Milkshake",
+    "name": "Smoothie",
     "version": "0.1",
     "manifest_version": 2,
     "description": "Extending the awesome Remember The Milk with a few more features",
@@ -27,5 +27,9 @@
         "launch": {
             "local_path": "page/background.html"
         }
-    }
+    },
+
+    "permissions":[
+        "https://*.rememberthemilk.com/*"
+    ]
 }

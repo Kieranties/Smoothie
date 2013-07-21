@@ -75,7 +75,7 @@ var omni = {
 
 // triggered when the user starts an omnibox session for this app
 chrome.omnibox.onInputStarted.addListener(function(){
-    console.log("Milkshake: started!");
+    console.log("Smoothie: started!");
 })
 
 // triggers when the user starts typing in the omnibox session
@@ -86,11 +86,11 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest){
 
 // triggers when the users hits enter
 chrome.omnibox.onInputEntered.addListener(function(text,disposition){
-    console.log("Milkshake: final text - " + text)
+    console.log("Smoothie: final text - " + text)
     console.log(disposition);
 });
 
 // triggered on user bailing from omnibox session
 chrome.omnibox.onInputCancelled.addListener(function() {
-    console.log("Milkshake: user bailed!")
+    console.log("Smoothie: user bailed!")
 })
