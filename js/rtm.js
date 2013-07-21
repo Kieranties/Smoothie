@@ -48,6 +48,7 @@
 
     // private request executor
     var executeRequest = function(url, params, successCallback, errorCallback){
+        if(this.authToken){ params.auth_token = this.authToken; }
         params.api_sig = sign(params);
 
         $.ajax(url,{
@@ -73,9 +74,16 @@
         executeRequest(apiUrl, params, successCallback, errorCallback);
     }
 
+
     window.rtm = {
         getAuth: getAuth,
         get: get
     };
+
+    chrome.storage.local.get("auth", function(data){
+        if(!!data.auth){
+            window.rtm.authToken = data.auth.token;
+        }
+    });
 
 })(auth, jQuery, md5);

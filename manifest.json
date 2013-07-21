@@ -18,7 +18,9 @@
         "persistent": false,
         "scripts": [
             "js/lib/md5.min.js",
-            "js/lib/rtm.js",
+            "js/lib/jquery-2.0.3.min.js",
+            "js/auth.js",
+            "js/rtm.js",
             "js/omni.js"
         ]
     },

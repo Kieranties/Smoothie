@@ -25,6 +25,8 @@ $(function(){
                     if(id === tab.id && info.status === "complete"){
                         // refresh auth status
                         rtm.get("rtm.auth.getToken", {frob: data.frob}, function(auth){
+                            //build list cache?
+                            //build location cache?
                             chrome.storage.local.set(auth, reload);
                         });
                     }
