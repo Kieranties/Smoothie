@@ -24,12 +24,20 @@
               <h1>Smoothie: <small>Blending Remember The Milk and Chrome</small></h1>
             </div>
             <div class="row-fluid">
-                <div class="span2"></div>
-                <div class="span10">
-                    <div class="alert alert-error">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        <strong>Login first!</strong> No features will work until you authorise Smoothie.
+                <div class="span3">
+                    <div id="unAuthed" class="alert alert-error">
+                        <strong>Authorisation required</strong>
+                        <p>No features will be enabled until you authorise Smoothie.</p>
+                        <p><button class="btn btn-block btn-primary" type="button">Authorise Smoothie</button></p>
                     </div>
+                    <div id="authed" class="alert alert-success" style="display:none">
+                        <strong>Authorised</strong>
+                        <p>Fullname fullname</p>
+                        <p>Username username</p>
+                        <p><button class="btn btn-block btn-danger" type="button">Revoke Smoothie permissions</button></p>
+                    </div>
+                </div>
+                <div class="span9" style="height:100%">
                 </div>
             </div>
         </div>
