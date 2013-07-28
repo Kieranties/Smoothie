@@ -48,7 +48,7 @@
 
     // private request executor
     var executeRequest = function(url, params, successCallback, errorCallback){
-        if(this.authToken){ params.auth_token = this.authToken; }
+        if(rtm.authToken) { params.auth_token = rtm.authToken; }
         params.api_sig = sign(params);
 
         $.ajax(url,{
@@ -73,7 +73,6 @@
 
         executeRequest(apiUrl, params, successCallback, errorCallback);
     }
-
 
     window.rtm = {
         getAuth: getAuth,
