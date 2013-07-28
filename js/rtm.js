@@ -82,6 +82,14 @@
     chrome.storage.local.get("auth", function(data){
         if(!!data.auth){
             window.rtm.authToken = data.auth.token;
+
+            // cache the users lists
+            get("rtm.lists.getList",null, function(rsp){
+                window.rtm.lists = {};
+                $.each(rsp.lists.list, function(idx, list){
+                    window.rtm.lists[list.id] = list;
+                });
+            });
         }
     });
 

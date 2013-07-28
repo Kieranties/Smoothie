@@ -24,15 +24,9 @@
             "js/omni.js"
         ]
     },
-
-    "app": {
-        "launch": {
-            "local_path": "page/background.html"
-        }
-    },
-
     "permissions":[
         "storage",
+        "notifications",
         "https://*.rememberthemilk.com/*"
     ]
 }
