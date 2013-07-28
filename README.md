@@ -1,7 +1,7 @@
-Milkshake
-=========
+Smoothie
+========
 
-Add extra shake to [Remember The Milk][rtm]
+Blending [Remember The Milk][rtm] and [Google Chrome][chrome]
 
 Features
 --------
@@ -9,14 +9,15 @@ Features
 ### Omnibox integration
 Got a new task or need to dump something out of your head?
 
-+ Type `ms` (for _Milkshake_) in the omnbox then hit the tab key to create a task
++ Type `sm` (for _Smoothie_) in the omnibox then hit the tab key to start creating a task
 + Hit enter and the task will be added to your Remember The Milk inbox
-+ All the [smart add][rtm smart] features of Remember The Milk work too!
++ All the [smart add][rtm smart] features of Remember The Milk work too
++ Plus you get hints for each smart feature as you type
 
 Requirements
 ------------
 + [Google Chrome][chrome] (version 18 or higher)
-+ An account at Remember The Milk ([signup here][rtm signup])
++ An account at Remember The Milk ([sign up here][rtm signup])
 
 Links
 -----
