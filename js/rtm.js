@@ -3,28 +3,30 @@
  * Date: 15/07/13
  */
 
-(function(auth, $, md5){
+(function(exports, $, md5){
+
+    var rtm = exports.rtm || {};
 
     var apiUrl = "https://api.rememberthemilk.com/services/rest/";
     var authUrl = "https://www.rememberthemilk.com/services/auth/";
     var perms = "delete";
 
     // returns the default params object for a request
-    var defaultParams = function(method){
-        var params = {api_key: auth.apiKey, format: "json" };
+    function defaultParams(method){
+        var params = {api_key: rtm.api.apiKey, format: "json" };
         if(!!method) { params.method = method; }
 
         return params;
     }
 
     // general error handler
-    var onError = function(error, callback){
+    function onError(error, callback){
         console.error(error);
         if(callback){ callback(error); }
     }
 
     // general success handler
-    var onSuccess = function(data, successCallback, errorCallback){
+    function onSuccess(data, successCallback, errorCallback){
         if(successCallback && (data.rsp.stat === "ok")){
             successCallback(data.rsp);
         }else{
@@ -33,7 +35,7 @@
     }
 
     // returns a signature for the given params
-    var sign = function(params){
+    function sign(params){
         var params = params || {};
         var keys = Object.keys(params);
         keys.sort();
@@ -42,13 +44,13 @@
             signature += (keys[i] + params[keys[i]]);
         }
 
-        signature = auth.sharedSecret + signature;
+        signature = rtm.api.sharedSecret + signature;
         return md5(signature);
     }
 
     // private request executor
-    var executeRequest = function(url, params, successCallback, errorCallback){
-        if(rtm.authToken) { params.auth_token = rtm.authToken; }
+    function executeRequest(url, params, successCallback, errorCallback){
+        if(rtm.auth.token) { params.auth_token = rtm.auth.token; }
         params.api_sig = sign(params);
 
         $.ajax(url,{
@@ -60,7 +62,7 @@
     }
 
     // gets an auth url for rtm
-    var getAuth = function(frob){
+    rtm.getAuth = function(frob){
         var params = $.extend({}, defaultParams(), {frob: frob, perms: perms});
         params.api_sig = sign(params);
 
@@ -68,29 +70,26 @@
     }
 
     // makes a request for data to RTM
-    var get = function(method, params, successCallback, errorCallback){
+    rtm.getData = function(method, params, successCallback, errorCallback){
         var params = $.extend({}, defaultParams(method), params);
 
         executeRequest(apiUrl, params, successCallback, errorCallback);
     }
 
-    window.rtm = {
-        getAuth: getAuth,
-        get: get
-    };
-
     chrome.storage.local.get("auth", function(data){
         if(!!data.auth){
-            window.rtm.authToken = data.auth.token;
+            rtm.auth = data.auth;
 
-            // cache the users lists
-            get("rtm.lists.getList",null, function(rsp){
-                window.rtm.lists = {};
+            // cache the users lists on load
+            rtm.getData("rtm.lists.getList",null, function(rsp){
+                rtm.lists = {};
                 $.each(rsp.lists.list, function(idx, list){
-                    window.rtm.lists[list.id] = list;
+                    rtm.lists[list.id] = list;
                 });
             });
         }
     });
 
-})(auth, jQuery, md5);
+    exports.rtm = rtm;
+
+})(this, $, md5);

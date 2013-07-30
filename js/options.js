@@ -3,39 +3,37 @@
  * Date: 14/07/13
  */
 
-$(function(){
-    var reload = function(){ location.reload();};
-    //toggle the state of the auth box
-    chrome.storage.local.get('auth', function(data){
-        if(!!data.auth){
+(function(rtm){
+    $(function(){
+        var reload = function(){ location.reload();};
+        //toggle the state of the auth box
+        if(!!rtm.auth){
             $('#unauthed, #authed').toggle();
-            $('#username').html(data.auth.user.username);
+            $('#username').html(rtm.auth.user.username);
         }
-    })
 
-    // wire events
-    $('#authBtn').click(function(){
-        rtm.get("rtm.auth.getFrob", null, function(data){
-            chrome.storage.local.set({frob: data.frob});
+        // wire events
+        $('#authBtn').click(function(){
+            rtm.getData("rtm.auth.getFrob", null, function(data){
+                chrome.storage.local.set({frob: data.frob});
 
-            var authUrl = rtm.getAuth(data.frob);
+                var authUrl = rtm.getAuth(data.frob);
 
-            chrome.tabs.create({url: authUrl }, function(tab){
-                chrome.tabs.onUpdated.addListener(function(id, info){
-                    if(id === tab.id && info.status === "complete"){
-                        // refresh auth status
-                        rtm.get("rtm.auth.getToken", {frob: data.frob}, function(auth){
-                            //build list cache?
-                            //build location cache?
-                            chrome.storage.local.set(auth, reload);
-                        });
-                    }
-                })
+                chrome.tabs.create({url: authUrl }, function(tab){
+                    chrome.tabs.onUpdated.addListener(function(id, info){
+                        if(id === tab.id && info.status === "complete"){
+                            // refresh auth status
+                            rtm.getData("rtm.auth.getToken", {frob: data.frob}, function(auth){
+                                chrome.storage.local.set(auth, reload);
+                            });
+                        }
+                    })
+                });
             });
         });
-    });
 
-    $('#unauthBtn').click(function(){
-        chrome.storage.local.clear(reload);
+        $('#unauthBtn').click(function(){
+            chrome.storage.local.clear(reload);
+        });
     });
-});
+})(rtm);
