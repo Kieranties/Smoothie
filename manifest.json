@@ -14,8 +14,9 @@
     "background": {
         "persistent": false,
         "scripts": [
-            "js/lib/md5.min.js",
-            "js/auth.js",
+            "js/lib/angular.min.js",
+            "js/lib/md5.js",
+            "js/format.js",
             "js/rtm.js",
             "js/omni.js"
         ]

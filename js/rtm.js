@@ -1,95 +1,118 @@
 /**
  * User: Kieranties
- * Date: 15/07/13
+ * Date: 02/08/13
  */
 
-(function(exports, $, md5){
+angular.module('rtm', ['md5'])
+    .constant('Api', {
+        url: 'https://api.rememberthemilk.com/services/rest/',
+        authUrl: 'https://www.rememberthemilk.com/services/auth/',
+        permissions: 'delete',
+        format: 'json',
+        key: "",
+        secret: ""
+    })
+    .factory('Rtm', function(Api, md5, $q, $http){
 
-    var rtm = exports.rtm || {};
+        // use promise for auth item
+        var _auth = (function(){
+            var d = $q.defer();
 
-    var apiUrl = "https://api.rememberthemilk.com/services/rest/";
-    var authUrl = "https://www.rememberthemilk.com/services/auth/";
-    var perms = "delete";
-
-    // returns the default params object for a request
-    function defaultParams(method){
-        var params = {api_key: rtm.api.apiKey, format: "json" };
-        if(!!method) { params.method = method; }
-
-        return params;
-    }
-
-    // general error handler
-    function onError(error, callback){
-        console.error(error);
-        if(callback){ callback(error); }
-    }
-
-    // general success handler
-    function onSuccess(data, successCallback, errorCallback){
-        if(successCallback && (data.rsp.stat === "ok")){
-            successCallback(data.rsp);
-        }else{
-            onError(data, errorCallback);
-        }
-    }
-
-    // returns a signature for the given params
-    function sign(params){
-        var params = params || {};
-        var keys = Object.keys(params);
-        keys.sort();
-        var signature = '';
-        for(var i = 0, max = keys.length; i < max; i++){
-            signature += (keys[i] + params[keys[i]]);
-        }
-
-        signature = rtm.api.sharedSecret + signature;
-        return md5(signature);
-    }
-
-    // private request executor
-    function executeRequest(url, params, successCallback, errorCallback){
-        if(rtm.auth.token) { params.auth_token = rtm.auth.token; }
-        params.api_sig = sign(params);
-
-        $.ajax(url,{
-            data: params,
-            dataType: "json",
-            success: function(data){ onSuccess(data, successCallback, errorCallback); },
-            error: function(data){ onError(data, errorCallback); }
-        });
-    }
-
-    // gets an auth url for rtm
-    rtm.getAuth = function(frob){
-        var params = $.extend({}, defaultParams(), {frob: frob, perms: perms});
-        params.api_sig = sign(params);
-
-        return authUrl + '?' + $.param(params);
-    }
-
-    // makes a request for data to RTM
-    rtm.getData = function(method, params, successCallback, errorCallback){
-        var params = $.extend({}, defaultParams(method), params);
-
-        executeRequest(apiUrl, params, successCallback, errorCallback);
-    }
-
-    chrome.storage.local.get("auth", function(data){
-        if(!!data.auth){
-            rtm.auth = data.auth;
-
-            // cache the users lists on load
-            rtm.getData("rtm.lists.getList",null, function(rsp){
-                rtm.lists = {};
-                $.each(rsp.lists.list, function(idx, list){
-                    rtm.lists[list.id] = list;
+            getData('rtm.auth.getFrob', null).then(function(rsp){
+                chrome.tabs.create({url: getAuth(rsp.frob) }, function(tab){
+                    chrome.tabs.onUpdated.addListener(function(id, info){
+                        if(id === tab.id && info.status === "complete"){
+                            // refresh auth status
+                            getData("rtm.auth.getToken", {frob: rsp.frob})
+                                .then(function(auth){
+                                    chrome.storage.local.set(auth);
+                                    d.resolve(auth);
+                                });
+                        }
+                    });
                 });
             });
+
+            return d.promise;
+        })();
+
+        function defaultParams(method){
+            var params = {api_key: Api.key, format: Api.format };
+            if(!!method) { params.method = method; }
+
+            return params;
         }
-    });
 
-    exports.rtm = rtm;
+        // returns a signature for the given params
+        function sign(params){
+            var params = params || {};
+            var keys = Object.keys(params);
+            keys.sort();
+            var signature = '';
+            for(var i = 0, max = keys.length; i < max; i++){
+                signature += (keys[i] + params[keys[i]]);
+            }
 
-})(this, $, md5);
+            signature = Api.secret + signature;
+            return md5.createHash(signature);
+        }
+
+        // private request executor
+        function executeRequest(url, params){
+            var process = function(p){
+                var d = $q.defer();
+                p.api_sig = sign(p);
+                $http.get(url, {params: p})
+                    .success(function(data){
+                        if(data.rsp.stat === "ok"){
+                            d.resolve(data.rsp);
+                        } else {
+                            d.reject(data.rsp);
+                        }
+                    })
+                    .error(function(data){
+                        console.log(data);
+                        d.reject(data);
+                    });
+
+                return d.promise;
+            }
+
+            if (_auth) {
+                return _auth.then(function(auth){
+                    params.auth_token = auth.token;
+                    return process(params);
+                }, function(){
+                    return process(params);
+                });
+            } else {
+                return process(params);
+            }
+        }
+
+        // gets an auth url for rtm
+        function getAuth(frob){
+            var params = angular.extend({}, defaultParams(), {frob: frob, perms: Api.permissions});
+            params.api_sig = sign(params);
+
+            //encode the params - simple implementation as not needed elsewhere
+            var paramsString = ''
+            angular.forEach(params, function(v, k){
+                paramsString += k + '=' + encodeURIComponent(v) + '&'
+            });
+
+            return Api.authUrl + '?' + paramsString;
+        }
+
+        // makes a request for data to RTM
+        function getData(method, params){
+            var params = angular.extend({}, defaultParams(method), params);
+
+            return executeRequest(Api.url, params);
+        }
+
+        return {
+            getAuth: getAuth,
+            getData: getData
+        }
+    })
