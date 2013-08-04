@@ -3,34 +3,23 @@
  * Date: 02/08/13
  */
 
-angular.module('rtm', ['md5'])
+angular.module('rtm', ['md5', 'store'])
     .constant('Api', {
         url: 'https://api.rememberthemilk.com/services/rest/',
         authUrl: 'https://www.rememberthemilk.com/services/auth/',
         permissions: 'delete',
         format: 'json',
-        key: "",
-        secret: ""
+        key: "##APIKEY",
+        secret: "##APISECRET##"
     })
-    .factory('Rtm', function(Api, md5, $q, $http){
+    .factory('Rtm', function(Api, Store, md5, $q, $http){
 
         // use promise for auth item
         var _auth = (function(){
             var d = $q.defer();
 
-            getData('rtm.auth.getFrob', null).then(function(rsp){
-                chrome.tabs.create({url: getAuth(rsp.frob) }, function(tab){
-                    chrome.tabs.onUpdated.addListener(function(id, info){
-                        if(id === tab.id && info.status === "complete"){
-                            // refresh auth status
-                            getData("rtm.auth.getToken", {frob: rsp.frob})
-                                .then(function(auth){
-                                    chrome.storage.local.set(auth);
-                                    d.resolve(auth);
-                                });
-                        }
-                    });
-                });
+            chrome.storage.local.get('auth', function(auth){
+                d.resolve(auth);
             });
 
             return d.promise;

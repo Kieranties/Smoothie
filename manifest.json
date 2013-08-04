@@ -11,6 +11,7 @@
     },
 
     "omnibox": { "keyword": "sm"},
+    "options_page": "pages/options.html",
     "background": {
         "persistent": false,
         "scripts": [

@@ -3,37 +3,44 @@
  * Date: 14/07/13
  */
 
-(function(rtm){
-    $(function(){
-        var reload = function(){ location.reload();};
-        //toggle the state of the auth box
-        if(!!rtm.auth){
-            $('#unauthed, #authed').toggle();
-            $('#username').html(rtm.auth.user.username);
+angular.module('options', ['rtm', 'store'])
+    .controller('auth', function ($scope, Rtm, Store) {
+        $scope.data = {};
+
+        function setAuthData() {
+            Store.auth(function (auth) {
+                $scope.data.auth = auth;
+            });
         }
 
-        // wire events
-        $('#authBtn').click(function(){
-            rtm.getData("rtm.auth.getFrob", null, function(data){
-                chrome.storage.local.set({frob: data.frob});
+        $scope.authorise = function () {
 
-                var authUrl = rtm.getAuth(data.frob);
+            var error = function (data) {
+                console.log(data)
+            }
 
-                chrome.tabs.create({url: authUrl }, function(tab){
-                    chrome.tabs.onUpdated.addListener(function(id, info){
-                        if(id === tab.id && info.status === "complete"){
+            var authSuccess = function (data) {
+                Store.set(data);
+                setAuthData();
+            }
+
+            var frobSuccess = function (rsp) {
+                var frob = {frob: rsp.frob};
+                Store.set(frob);
+
+                chrome.tabs.create({url: Rtm.getAuth(rsp.frob) }, function (tab) {
+                    chrome.tabs.onUpdated.addListener(function (id, info) {
+                        if (id === tab.id && info.status === "complete") {
                             // refresh auth status
-                            rtm.getData("rtm.auth.getToken", {frob: data.frob}, function(auth){
-                                chrome.storage.local.set(auth, reload);
-                            });
+                            Rtm.getData("rtm.auth.getToken", frob).then(authSuccess(), error);
                         }
-                    })
+                    });
                 });
-            });
-        });
+            }
 
-        $('#unauthBtn').click(function(){
-            chrome.storage.local.clear(reload);
-        });
+            Rtm.getData('rtm.auth.getFrob').then(frobSuccess, error);
+        }
+
+        setAuthData();
+
     });
-})(rtm);
