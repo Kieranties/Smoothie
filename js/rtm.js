@@ -9,13 +9,13 @@ angular.module('rtm', ['md5', 'store'])
         authUrl: 'https://www.rememberthemilk.com/services/auth/',
         permissions: 'delete',
         format: 'json',
-        key: "##APIKEY",
+        key: "##APIKEY##",
         secret: "##APISECRET##"
     })
     .factory('Rtm', function(Api, Store, md5, $q, $http){
 
         // use promise for auth item
-        var _auth = (function(){
+        var _auth = function(){
             var d = $q.defer();
 
             chrome.storage.local.get('auth', function(auth){
@@ -23,7 +23,7 @@ angular.module('rtm', ['md5', 'store'])
             });
 
             return d.promise;
-        })();
+        });
 
         function defaultParams(method){
             var params = {api_key: Api.key, format: Api.format };
@@ -100,8 +100,17 @@ angular.module('rtm', ['md5', 'store'])
             return executeRequest(Api.url, params);
         }
 
+        function hasAuth(){
+            function checkToken(data){ getData("rtm.auth.checkToken", {auth_token: data.token }) }
+
+            return Store.auth()
+                .then(checkToken)
+                .then(console.log, console.error);
+        }
+
         return {
             getAuth: getAuth,
-            getData: getData
+            getData: getData,
+            hasAuth: hasAuth
         }
     })

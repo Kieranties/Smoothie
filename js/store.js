@@ -4,20 +4,33 @@
  */
 
 angular.module('store',[])
-    .factory('Store', function(){
+    .factory('Store', function($q){
         var _type = 'local';
         var _accessor = chrome.storage[_type];
 
-        function get(key, callback){
-            _accessor.get(key, callback);
+        function get(key){
+            var d = $q.defer();
+
+            _accessor.get(key, function(data){
+                if(data[key]){d.resolve(data[key])}
+                else {d.reject()}
+            });
+
+            return d.promise;
         }
 
-        function set(obj, callback){
-            _accessor.set(obj, callback);
+        function set(obj){
+            var d = $q.defer();
+
+            _accessor.set(obj, function(){
+                d.resolve();
+            });
+
+            return d.promise;
         }
 
-        function auth(callback){
-            get('auth', callback);
+        function auth(){
+            return get('auth');
         }
 
         return {

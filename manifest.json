@@ -18,6 +18,7 @@
             "js/lib/angular.min.js",
             "js/lib/md5.js",
             "js/format.js",
+            "js/store.js",
             "js/rtm.js",
             "js/omni.js"
         ]

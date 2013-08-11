@@ -32,7 +32,7 @@ angular.module('options', ['rtm', 'store'])
                     chrome.tabs.onUpdated.addListener(function (id, info) {
                         if (id === tab.id && info.status === "complete") {
                             // refresh auth status
-                            Rtm.getData("rtm.auth.getToken", frob).then(authSuccess(), error);
+                            Rtm.getData("rtm.auth.getToken", frob).then(authSuccess, error);
                         }
                     });
                 });
