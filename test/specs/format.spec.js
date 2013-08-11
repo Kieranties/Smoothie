@@ -16,24 +16,24 @@ describe('The format module', function(){
         });
     })
 
-    it('exposes dimText() which wraps text in <dim> tags', function(){
+    it('should expose dimText() which wraps text in <dim> tags', function(){
         expect(format.dimText('dimmed')).toBe('<dim>dimmed</dim>');
     });
 
-    it('exposes matchText() which wraps text in <match> tags', function(){
+    it('should expose matchText() which wraps text in <match> tags', function(){
         expect(format.matchText('matched')).toBe('<match>matched</match>');
     });
 
-    it('exposes urlText() which wraps text in <url> tags', function(){
+    it('should expose urlText() which wraps text in <url> tags', function(){
         expect(format.urlText('urled')).toBe('<url>urled</url>');
     });
 
-    it('allows dim/match/url methods to be wrapped', function(){
+    it('should allow dim/match/url methods to be wrapped', function(){
         expect(format.urlText(format.matchText(format.dimText('all the things'))))
             .toBe('<url><match><dim>all the things</dim></match></url>');
     });
 
-    it('exposes priorityString() which returns a number as a priority description', function(){
+    it('should expose priorityString() which returns a number as a priority description', function(){
         expect(format.priorityString(1)).toBe('1 - High');
         expect(format.priorityString(2)).toBe('2 - Medium');
         expect(format.priorityString(3)).toBe('3 - Low');
@@ -45,7 +45,7 @@ describe('The format module', function(){
         expect(format.priorityString(Math.random())).toBe('None');
     })
 
-    describe('defines getDayName', function(){
+    describe('should define getDayName', function(){
         it('as a method on the Date object', function(){
             expect(Date.prototype.getDayName).toBeDefined();
         });

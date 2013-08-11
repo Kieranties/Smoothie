@@ -3,10 +3,10 @@
  * Date: 04/08/13
  */
 
-angular.module('store',[])
-    .factory('Store', function($q){
+angular.module('store',['chrome'])
+    .factory('Store', function($q, Chrome){
         var _type = 'local';
-        var _accessor = chrome.storage[_type];
+        var _accessor = Chrome.storage[_type];
 
         function get(key){
             var d = $q.defer();
