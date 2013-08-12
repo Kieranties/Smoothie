@@ -17,8 +17,7 @@ module.exports = function(config) {
         'js/lib/*.js',
         'test/lib/*.js',
         'test/mocks/*.js',
-        'js/format.js',
-        'js/store.js',
+        'js/*.js',
         'test/specs/*.spec.js'
     ],
 
@@ -26,6 +25,8 @@ module.exports = function(config) {
     // list of files to exclude
     exclude: [
         'test/lib/[jJ]asmine*.js',
+        'js/chrome.js',
+        'js/omni.js',
     ],
 
 

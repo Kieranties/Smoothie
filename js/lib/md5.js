@@ -15,7 +15,8 @@
 
 // Full credit - https://github.com/lavinjj/angularjs-gravatardirective/blob/master/src/md5-service.js
 
-angular.module('md5', []).factory('md5', [function() {
+angular.module('md5', [])
+    .factory('md5', [function() {
 
         var md5 = {
 

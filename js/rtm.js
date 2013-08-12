@@ -14,17 +14,7 @@ angular.module('rtm', ['md5', 'store'])
     })
     .factory('Rtm', function(Api, Store, md5, $q, $http){
 
-        // use promise for auth item
-        var _auth = function(){
-            var d = $q.defer();
-
-            chrome.storage.local.get('auth', function(auth){
-                d.resolve(auth);
-            });
-
-            return d.promise;
-        });
-
+        // compose default parameters
         function defaultParams(method){
             var params = {api_key: Api.key, format: Api.format };
             if(!!method) { params.method = method; }
@@ -46,39 +36,6 @@ angular.module('rtm', ['md5', 'store'])
             return md5.createHash(signature);
         }
 
-        // private request executor
-        function executeRequest(url, params){
-            var process = function(p){
-                var d = $q.defer();
-                p.api_sig = sign(p);
-                $http.get(url, {params: p})
-                    .success(function(data){
-                        if(data.rsp.stat === "ok"){
-                            d.resolve(data.rsp);
-                        } else {
-                            d.reject(data.rsp);
-                        }
-                    })
-                    .error(function(data){
-                        console.log(data);
-                        d.reject(data);
-                    });
-
-                return d.promise;
-            }
-
-            if (_auth) {
-                return _auth.then(function(auth){
-                    params.auth_token = auth.token;
-                    return process(params);
-                }, function(){
-                    return process(params);
-                });
-            } else {
-                return process(params);
-            }
-        }
-
         // gets an auth url for rtm
         function getAuth(frob){
             var params = angular.extend({}, defaultParams(), {frob: frob, perms: Api.permissions});
@@ -96,21 +53,20 @@ angular.module('rtm', ['md5', 'store'])
         // makes a request for data to RTM
         function getData(method, params){
             var params = angular.extend({}, defaultParams(method), params);
+            var execute = function(authToken){
+                if(!!authToken){ params.auth_token = authToken }
+                return $http.get(Api.url, {params: params});
+            }
 
-            return executeRequest(Api.url, params);
-        }
-
-        function hasAuth(){
-            function checkToken(data){ getData("rtm.auth.checkToken", {auth_token: data.token }) }
-
-            return Store.auth()
-                .then(checkToken)
-                .then(console.log, console.error);
+            return Store.get('auth')
+                .then(function(auth){
+                    if(!!auth){ return execute(auth.token); }
+                    else { return execute; }
+                }, execute);
         }
 
         return {
             getAuth: getAuth,
-            getData: getData,
-            hasAuth: hasAuth
+            getData: getData
         }
     })

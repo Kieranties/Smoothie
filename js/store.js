@@ -12,7 +12,7 @@ angular.module('store',['chrome'])
             var d = $q.defer();
 
             _accessor.get(key, function(data){
-                if(data[key]){d.resolve(data[key])}
+                if(data && data[key]){d.resolve(data[key])}
                 else {d.reject()}
             });
 
@@ -29,13 +29,8 @@ angular.module('store',['chrome'])
             return d.promise;
         }
 
-        function auth(){
-            return get('auth');
-        }
-
         return {
             get: get,
-            set: set,
-            auth: auth
+            set: set
         }
     })
