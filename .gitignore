@@ -1,2 +1,4 @@
 .idea/
-js/auth.js
+*Thumbs.db
+*build-runner.ps1
+*precommit-runner.ps1
