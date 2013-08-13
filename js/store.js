@@ -13,7 +13,7 @@ angular.module('store',['chrome'])
 
             _accessor.get(key, function(data){
                 if(data && data[key]){d.resolve(data[key])}
-                else {d.reject()}
+                else {d.reject("Could not be found - " + key)}
             });
 
             return d.promise;
@@ -23,7 +23,9 @@ angular.module('store',['chrome'])
             var d = $q.defer();
 
             _accessor.set(obj, function(){
-                d.resolve();
+                var err = Chrome.runtime.lastError();
+                if(err) {d.reject("Could not set value - " + err.message)}
+                else {d.resolve()};
             });
 
             return d.promise;

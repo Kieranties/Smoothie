@@ -7,6 +7,9 @@
 angular.module('chrome',[])
     .factory('Chrome', function(){
         return {
+            runtime: {
+                lastError: function(){}
+            },
             storage: {
                 local:{
                     get: function(){},

@@ -4,7 +4,7 @@
  */
 
 describe('The store module', function(){
-    var store, chrome;
+    var store, chrome, setChromeError;
 
     beforeEach(function(){
         module('store','chrome');
@@ -12,6 +12,14 @@ describe('The store module', function(){
             store = Store;
             chrome = Chrome;
         })
+
+        setChromeError = function(message){
+            spyOn(chrome.runtime, 'lastError')
+                .andCallFake(function(){
+                    if(!!message) { return {message: message};}
+                    else { return null;}
+                })
+        }
     })
 
     describe('when setting values', function(){
@@ -34,12 +42,27 @@ describe('The store module', function(){
             expect(store.set({}).then).toBeDefined();
         })
 
-        it('should resolve the promise when chrome storage completes',
+        it('should resolve the promise when chrome storage completes successfully',
             inject(function($rootScope){
                 var promiseSpy = jasmine.createSpy('promise');
+                setChromeError();
                 store.set({test: 'value'}).then(promiseSpy);
-                $rootScope.$apply(); //have to apply as deffered will occur asynchronously
+                $rootScope.$apply();
                 expect(promiseSpy).toHaveBeenCalled();
+            })
+        )
+
+        it('should reject the promise when chrome storage errors',
+            inject(function($rootScope){
+                var promiseSpy = jasmine.createSpy('promise');
+                var errorSpy = jasmine.createSpy('error');
+                var message = "Error message";
+                setChromeError(message);
+                store.set({test: 'value'}).then(promiseSpy, errorSpy);
+                $rootScope.$apply();
+                expect(promiseSpy).not.toHaveBeenCalled();
+                expect(errorSpy).toHaveBeenCalledWith(jasmine.any(String));
+                expect(errorSpy.mostRecentCall.args[0]).toMatch(message);
             })
         )
     })
