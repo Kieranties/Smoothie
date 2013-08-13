@@ -53,16 +53,13 @@ angular.module('rtm', ['md5', 'store'])
         // makes a request for data to RTM
         function getData(method, params){
             var params = angular.extend({}, defaultParams(method), params);
-            var execute = function(authToken){
-                if(!!authToken){ params.auth_token = authToken }
+            var execute = function(auth){
+                if(auth && auth.token){ params.auth_token = auth.token }
                 return $http.get(Api.url, {params: params});
             }
 
-            return Store.get('auth')
-                .then(function(auth){
-                    if(!!auth){ return execute(auth.token); }
-                    else { return execute; }
-                }, execute);
+            // no 'always' function in $q yet
+            return Store.get('auth').then(execute, execute);
         }
 
         return {
