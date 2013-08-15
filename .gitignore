@@ -2,3 +2,6 @@
 *Thumbs.db
 *build-runner.ps1
 *precommit-runner.ps1
+node_modules
+build
+api.json

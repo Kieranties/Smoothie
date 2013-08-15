@@ -1,0 +1,20 @@
+{
+  "name": "Smoothie",
+  "version": "0.0.1",
+  "description": "Smoothie\r ========",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Kieranties/Smoothie.git"
+  },
+  "author": "Kieranties",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kieranties/Smoothie/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-replace": "~0.4.4",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-copy": "~0.4.1"
+  }
+}
