@@ -1,6 +1,6 @@
 {
     "name": "Smoothie",
-    "version": "0.1",
+    "version": "0.0.1",
     "manifest_version": 2,
     "description": "Blending Remember The Milk and Google Chrome",
     "icons": {
@@ -17,6 +17,7 @@
         "scripts": [
             "js/lib/angular.min.js",
             "js/lib/md5.js",
+            "js/chrome.js",
             "js/format.js",
             "js/store.js",
             "js/rtm.js",

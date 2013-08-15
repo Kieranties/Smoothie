@@ -23,8 +23,20 @@ angular.module('store',['chrome'])
             var d = $q.defer();
 
             _accessor.set(obj, function(){
-                var err = Chrome.runtime.lastError();
+                var err = Chrome.runtime.lastError;
                 if(err) {d.reject("Could not set value - " + err.message)}
+                else {d.resolve()};
+            });
+
+            return d.promise;
+        }
+
+        function remove(obj){
+            var d = $q.defer();
+
+            _accessor.remove(obj, function(){
+                var err = Chrome.runtime.lastError;
+                if(err) {d.reject("Could not remove " + obj + " - " + err.message)}
                 else {d.resolve()};
             });
 
@@ -33,6 +45,7 @@ angular.module('store',['chrome'])
 
         return {
             get: get,
-            set: set
+            set: set,
+            remove: remove
         }
     })
