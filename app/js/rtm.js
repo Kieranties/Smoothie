@@ -9,8 +9,8 @@ angular.module('rtm', ['md5', 'store'])
         authUrl: 'https://www.rememberthemilk.com/services/auth/',
         permissions: 'delete',
         format: 'json',
-        key: "##APIKEY##",
-        secret: "##APISECRET##"
+        key: "##apikey",
+        secret: "##apisecret"
     })
     .factory('Rtm', function(Api, Store, md5, $q, $http){
 

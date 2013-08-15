@@ -1,0 +1,31 @@
+{
+    "name": "Smoothie",
+    "version": "0.1",
+    "manifest_version": 2,
+    "description": "Blending Remember The Milk and Google Chrome",
+    "icons": {
+        "16": "img/icons/icon16.png",
+        "32": "img/icons/icon32.png",
+        "48": "img/icons/icon48.png",
+        "128": "img/icons/icon128.png"
+    },
+
+    "omnibox": { "keyword": "sm"},
+    "options_page": "pages/options.html",
+    "background": {
+        "persistent": false,
+        "scripts": [
+            "js/lib/angular.min.js",
+            "js/lib/md5.js",
+            "js/format.js",
+            "js/store.js",
+            "js/rtm.js",
+            "js/omni.js"
+        ]
+    },
+    "permissions":[
+        "storage",
+        "notifications",
+        "https://*.rememberthemilk.com/*"
+    ]
+}
